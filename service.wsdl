@@ -13,6 +13,7 @@
   <!-- WSDL TYPES: definition of the data types that are used in the web service -->
   <wsdl:types>
     <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+
       <s:element name="MessageSplitterRequest">
         <s:complexType>
           <s:sequence>
@@ -28,6 +29,23 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+
+      <s:element name="MarcioRequest">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="message" type="s:string"/>
+            <s:element minOccurs="1" maxOccurs="1" name="splitter" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="MarcioResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="unbounded" name="result" type="s:string"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+
     </s:schema>
   </wsdl:types>
   <!-- MESSAGES: defines the data being exchanged between the service and client -->
@@ -37,6 +55,14 @@
   <wsdl:message name="MessageSplitterSoapOut">
     <wsdl:part name="parameters" element="tns:MessageSplitterResponse"/>
   </wsdl:message>
+
+  <wsdl:message name="MarcioSoapIn">
+    <wsdl:part name="parameters" element="tns:MarcioRequest"/>
+  </wsdl:message>
+  <wsdl:message name="MarcioSoapOut">
+    <wsdl:part name="parameters" element="tns:MarcioResponse"/>
+  </wsdl:message>
+
   <!-- PORT TYPES: defines the complete communication operation (one way/round trip) -->
   <wsdl:portType name="MessageSplitterSoapPort">
     <!-- The operation name must be the same as the one specified in the service object -->
@@ -45,6 +71,13 @@
       <wsdl:output message="tns:MessageSplitterSoapOut"/>
     </wsdl:operation>
   </wsdl:portType>
+  <wsdl:portType name="MarcioSoapPort">
+    <!-- The operation name must be the same as the one specified in the service object -->
+    <wsdl:operation name="Marcio">
+      <wsdl:input message="tns:MarcioSoapIn"/>
+      <wsdl:output message="tns:MarcioSoapOut"/>
+    </wsdl:operation>
+  </wsdl:portType> 
   <!-- BINDING: provides details on how a portType operation will actually be transmitted -->
   <wsdl:binding name="MessageSplitterServiceSoapBinding" type="tns:MessageSplitterSoapPort">
     <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
@@ -58,6 +91,18 @@
       </wsdl:output>
     </wsdl:operation>
   </wsdl:binding>
+  <wsdl:binding name="MarcioServiceSoapBinding" type="tns:MarcioSoapPort">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="Marcio">
+      <soap:operation soapAction="Marcio" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>  
   <wsdl:binding name="MessageSplitterServiceSoap12Binding" type="tns:MessageSplitterSoapPort">
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http"/>
     <wsdl:operation name="MessageSplitter">
@@ -77,6 +122,12 @@
     </wsdl:port>
     <wsdl:port name="MessageSplitterServiceSoap12Port" binding="tns:MessageSplitterServiceSoap12Binding">
       <soap12:address location="http://localhost:8000/wsdl"/>
-    </wsdl:port>
+    </wsdl:port>  
   </wsdl:service>
+  <wsdl:service name="MarcioService">
+    <wsdl:port name="MarcioServiceSoapPort" binding="tns:MarcioServiceSoapBinding">
+      <soap12:address location="http://localhost:8000/wsdl"/>
+    </wsdl:port>    
+  </wsdl:service>
+
 </wsdl:definitions>
