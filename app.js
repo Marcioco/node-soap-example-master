@@ -32,8 +32,8 @@ function marcio_function(args) {
 
 // the service
 var serviceObject = {
-  MessageSplitterService: {
-    MessageSplitterServiceSoapPort: {
+  MarcioSoapService: { //MessageSplitterService
+    MarcioSOAPPort: { //MessageSplitterServiceSoapPort
       MessageSplitter: splitter_function,
       fMarcio: marcio_function
     }
@@ -42,7 +42,7 @@ var serviceObject = {
 
 
 // load the WSDL file
-var xml = fs.readFileSync('service.wsdl', 'utf8');
+var xml = fs.readFileSync('marcio.wsdl', 'utf8');
 // create express app
 var app = express();
 

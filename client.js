@@ -13,15 +13,21 @@ soap.createClient(url, function (err, client) {
   * in the WSDL file
   */
 
+  // var args = {
+  //   message: "Miromar,Junior",
+  //   splitter: ","
+  // };
+
   var args = {
-    message: "Miromar,Junior",
-    splitter: ","
-  };
+    nome: 'Marcio Claudio de Oliveira'
+  }
+
   // call the service
-  client.MessageSplitter(args, function (err, res) {
+  client.fMarcio(args, function (err, res) {
     if (err)
       throw err;
       // print the service returned result
     console.log(res); 
   });
+  
 });
