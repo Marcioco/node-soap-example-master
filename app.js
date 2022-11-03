@@ -22,12 +22,8 @@ function splitter_function(args) {
 }
 function marcio_function(args) {
   console.log('marcio_function');
-  var splitter = args.splitter;
-  var splitted_msg = args.message.split(splitter);
-  var result = [];
-  for (var i = 0; i < splitted_msg.length; i++) {
-    result.push(splitted_msg[i]);
-  }
+  var nome = args.nome;
+  var result = nome + ' resultado ok';
   return {
     result: result
   }
@@ -38,15 +34,8 @@ function marcio_function(args) {
 var serviceObject = {
   MessageSplitterService: {
     MessageSplitterServiceSoapPort: {
-      MessageSplitter: splitter_function
-    },
-    MessageSplitterServiceSoap12Port: {
-      MessageSplitter: splitter_function
-    }
-  },
-  MarcioService: {
-    MarcioServiceSoapPort: {
-      Marcio: marcio_function
+      MessageSplitter: marcio_function,
+      fMarcio: marcio_function
     }
   }
 };

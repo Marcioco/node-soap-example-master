@@ -12,9 +12,10 @@ soap.createClient(url, function (err, client) {
   * Parameters of the service call: they need to be called as specified
   * in the WSDL file
   */
+
   var args = {
-    message: "marcio:claudio:Oliveira",
-    splitter: ":"
+    message: "Miromar,Junior",
+    splitter: ","
   };
   // call the service
   client.MessageSplitter(args, function (err, res) {
