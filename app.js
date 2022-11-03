@@ -34,14 +34,11 @@ function marcio_function(args) {
 var serviceObject = {
   MessageSplitterService: {
     MessageSplitterServiceSoapPort: {
-      MessageSplitter: marcio_function,
+      MessageSplitter: splitter_function,
       fMarcio: marcio_function
     }
   }
 };
-
-
-
 
 
 // load the WSDL file
