@@ -16,6 +16,22 @@
           </xsd:sequence>
         </xsd:complexType>
       </xsd:element>
+      <xsd:element name="fdadosFornecedorRequest">
+      	<xsd:complexType>
+      		<xsd:sequence>
+
+      			<xsd:element name="cpf" type="xsd:string"></xsd:element>
+      		</xsd:sequence>
+      	</xsd:complexType>
+      </xsd:element>
+      <xsd:element name="fdadosFornecedorResponse">
+      	<xsd:complexType>
+      		<xsd:sequence>
+
+      			<xsd:element name="result" type="xsd:string"></xsd:element>
+      		</xsd:sequence>
+      	</xsd:complexType>
+      </xsd:element>
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="fMarcioRequest">
@@ -24,23 +40,46 @@
   <wsdl:message name="fMarcioResponse">
     <wsdl:part element="tns:fMarcioResponse" name="parameters"/>
   </wsdl:message>
+  <wsdl:message name="fdadosFornecedorRequest">
+  	<wsdl:part name="parameters" element="tns:fdadosFornecedorRequest"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="fdadosFornecedorResponse">
+  	<wsdl:part name="parameters" element="tns:fdadosFornecedorResponse"></wsdl:part>
+  </wsdl:message>
   <wsdl:portType name="MarcioSoapportType">
     <wsdl:operation name="fMarcio">
       <wsdl:input message="tns:fMarcioRequest"/>
       <wsdl:output message="tns:fMarcioResponse"/>
     </wsdl:operation>
-  </wsdl:portType>
-  <wsdl:binding name="MarcioSOAPBinding" type="tns:MarcioSoapportType">
-    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
-    <wsdl:operation name="fMarcio">
-      <soap:operation soapAction="http://www.example.org/Marcio/fMarcio"/>
-      <wsdl:input>
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output>
-        <soap:body use="literal"/>
-      </wsdl:output>
+    <wsdl:operation name="fdadosFornecedor">
+    	<wsdl:input message="tns:fdadosFornecedorRequest"></wsdl:input>
+    	<wsdl:output message="tns:fdadosFornecedorResponse"></wsdl:output>
     </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="MarcioSOAPBinding"
+  	type="tns:MarcioSoapportType">
+  	<soap:binding style="document"
+  		transport="http://schemas.xmlsoap.org/soap/http" />
+  	<wsdl:operation name="fMarcio">
+  		<soap:operation
+  			soapAction="http://www.example.org/Marcio/fMarcio" />
+  		<wsdl:input>
+  			<soap:body use="literal" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="literal" />
+  		</wsdl:output>
+  	</wsdl:operation>
+  	<wsdl:operation name="fdadosFornecedor">
+  		<soap:operation
+  			soapAction="http://www.example.org/Marcio/fdadosFornecedor" />
+  		<wsdl:input>
+  			<soap:body use="literal" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="literal" />
+  		</wsdl:output>
+  	</wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="MarcioSoapService">
     <wsdl:port binding="tns:MarcioSOAPBinding" name="MarcioSOAPPort">

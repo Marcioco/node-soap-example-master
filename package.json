@@ -30,6 +30,8 @@
   "homepage": "https://github.com/macogala/node-soap-example#readme",
   "dependencies": {
     "express": "^4.15.2",
-    "soap": "^0.44.0"
+    "soap": "^0.44.0",
+    "oracledb": "^5.3.0",
+    "dotenv": "^16.0.1"
   }
 }

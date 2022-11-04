@@ -5,6 +5,8 @@
 var soap = require('soap');
 var express = require('express');
 var fs = require('fs');
+const oracledb = require("oracledb");
+const dbConfig = require("./configDB/configDB");
 
 
 // the splitter function, used by the service
@@ -29,13 +31,56 @@ function marcio_function(args) {
   }
 }
 
+async function dadosFornecedor(args) {
+  try {
+    let connection = await oracledb.getConnection(dbConfig);
+    let selectSql = `Select *
+                      From FORNECEDOR FORN
+                      Where FORN.FORN_CNPJ = :FORN_CNPJ`;
+
+    let result = await connection.execute(selectSql,
+      [args.cpf],
+      {
+        outFormat: oracledb.OUT_FORMAT_OBJECT,
+
+      }
+    );
+
+    return result.rows.length ? result.rows : {result: 'Nenhum registro'};
+  
+  } catch (error) {
+    console.error("erro ao listar pedidos", error);
+    res.send("erroSalvar").status(500);
+
+  } finally {
+    if (connection) {
+      try {
+        await connection.close();
+
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
+
+  // {
+  //   nomeFantasia: result.rows.length ? result.rows[0].FORN_NOME_FANTASIA : 'Nenhum registro',
+  //   rua: result.rows.length ? result.rows[0].FORN_RUA : 'Nenhum registro',
+  //   numero: result.rows.length ? result.rows[0].FORN_NUMERO : 'Nenhum registro',
+  //   bairro: result.rows.length ? result.rows[0].FORN_BAIRRO : 'Nenhum registro'
+
+  // }
+}
+
 
 // the service
 var serviceObject = {
   MarcioSoapService: { //MessageSplitterService
     MarcioSOAPPort: { //MessageSplitterServiceSoapPort
       MessageSplitter: splitter_function,
-      fMarcio: marcio_function
+      fMarcio: marcio_function,
+      fdadosFornecedor: dadosFornecedor
     }
   }
 };
