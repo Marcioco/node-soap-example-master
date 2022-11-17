@@ -9,7 +9,7 @@ const geraDadosRetornoPecas = async () => {
   //let json1 = {};
   //json1.PPECENVIADO02 = '10';
   //console.log(json1);
-  let idCotacao = 304;
+  let idCotacao = 348;
   let PPECEnviado02JSON = {};
   let destinatario = {}
   let fornecedorJSON = {};
@@ -31,12 +31,12 @@ const geraDadosRetornoPecas = async () => {
                           OFIC.FORN_CEP CEP_OFICINA,
                           OFIC.FORN_INSCRICAO_ESTADUAL IE_OFICINA,
                           OFIC.FORN_INSCRICAO_MUNICIPAL IM_OFICINA,
+                          COTA.COTA_NUM_SINISTRO,
+                          COTA.COTA_NUM_COTACAO,
                           COTA.ID_FORNEC_OFICINA,
                           SGRA.SGRA_CNPJ,
                           COTA.COTA_CNPJ_COMPRADOR,
-                          COTA.COTA_CPF_PERITO,
-                          COTA.COTA_NUMERO_ORC,
-                          COTA.COTA_SINISTRO_ORC,
+                          COTA.COTA_CPF_PERITO,                          
                           COTA.COTA_IDPEDIDO_PEDI,
                           TO_CHAR(COTA.COTA_DT_LIBERACAO,'YYYY-MM-DD HH24:MI:SS') DATAABERTURA
                     From COTACAO COTA,
@@ -82,8 +82,9 @@ const geraDadosRetornoPecas = async () => {
     // PPECEnviado02JSON.DESTINATARIO = destinatario;
 
     oficinaJSON.PESSOA = dadosCotacao.rows[0].PESSOA; //Pessoa (F)ísica ou (J)urídica (Oficina)
-    if (dadosCotacao.rows[0].CGC) { oficinaJSON.CGC = dadosCotacao.rows[0].CGC_OFICINA };
-    if (dadosCotacao.rows[0].CPF) { oficinaJSON.CGC = dadosCotacao.rows[0].CPF_OFICINA };
+    if (dadosCotacao.rows[0].CGC_OFICINA) { oficinaJSON.CGC = dadosCotacao.rows[0].CGC_OFICINA };
+    if (dadosCotacao.rows[0].CPF_OFICINA) { oficinaJSON.CPF = dadosCotacao.rows[0].CPF_OFICINA };
+
     //oficinaJSON.APELIDO = dadosCotacao.rows[0].APELIDO_OFICINA;
     //oficinaJSON.NOME = dadosCotacao.rows[0].NOME_OFICINA;
     //oficinaJSON.ENDERECO = dadosCotacao.rows[0].ENDERECO_OFICINA;
@@ -126,6 +127,7 @@ const geraDadosRetornoPecas = async () => {
                           FORN.ID_FORNECEDOR CODIGO,
                           DECODE(FORN.FORN_TIPO_PECA,'Paralela','A','C') TIPO,
                           FORN.ID_FORNECEDOR,
+                          FORN.FORN_RAZAO_SOCIAL,
                           FORN.FORN_NOME_FANTASIA APELIDO ,
                           FORN.FORN_RUA ||' '|| FORN.FORN_NUMERO || ' ' || FORN.FORN_COMPLEMENTO ENDERECO,
                           FORN.FORN_BAIRRO BAIRRO,
@@ -157,7 +159,7 @@ const geraDadosRetornoPecas = async () => {
         //fornecedorJSON.CODIGO = fornecedores.rows[key].CODIGO;
         fornecedorJSON.TIPO = fornecedores.rows[key].TIPO;
         //fornecedorJSON.APELIDO = fornecedores.rows[key].APELIDO;
-        fornecedorJSON.NOME = fornecedores.rows[key].NOME;
+        fornecedorJSON.NOME = fornecedores.rows[key].FORN_RAZAO_SOCIAL;
         //fornecedorJSON.ENDERECO = fornecedores.rows[key].ENDERECO;
         //fornecedorJSON.BAIRRO = fornecedores.rows[key].BAIRRO;
         //fornecedorJSON.CEP = fornecedores.rows[key].CEP;
@@ -199,35 +201,46 @@ const geraDadosRetornoPecas = async () => {
     let orcamentoJson = {};
     let CGCsJson = {};
 
-    pedidoJson.IDPEDIDO = dadosCotacao.rows[0].COTA_IDPEDIDO;
-    //pedidoJson.NUMERO = dadosCotacao.rows[0].NUMERO_PEDIDO;
-    //pedidoJson.DATAABERTURA = dadosCotacao.rows[0].DATAABERTURA;
-    tagPedido = pedidoJson;
-    orcamentoJson.NUMERO = dadosCotacao.rows[0].COTA_NUMERO_ORC;
-    orcamentoJson.SINISTRO = dadosCotacao.rows[0].COTA_SINISTRO_ORC;
+    tagPedido.IDPEDIDO = dadosCotacao.rows[0].COTA_IDPEDIDO_PEDI;
+    //tagPedido.NUMERO = dadosCotacao.rows[0].NUMERO_PEDIDO;
+    //tagPedido.DATAABERTURA = dadosCotacao.rows[0].DATAABERTURA;
+    
+
+
+    //Dados da Cotação
+    orcamentoJson.NUMERO = dadosCotacao.rows[0].COTA_NUM_COTACAO;
+    orcamentoJson.SINISTRO = dadosCotacao.rows[0].COTA_NUM_SINISTRO;
     tagPedido.ORCAMENTO = orcamentoJson;
+
     CGCsJson.OFICINA = dadosCotacao.rows[0].CNPJ_OFI;
     CGCsJson.SEGURADORA = dadosCotacao.rows[0].SGRA_CNPJ;
     tagPedido.CGCS = CGCsJson;
 
-    selectSql = `Select FORN.FORN_CNPJ,
-                        ITPD.ITPD_PART_NUMBER,
-                        ITPD.ITPD_DESCRICAO,
-                        ITPD.ITPD_QUANTIDADE,
-                        ITPD.ITPD_PRECO_BRUTO_SEGURADORA,
-                        ITPD.ITPD_PRECO_LIQUIDO_FORNECEDOR,
-                        ITPD.STPE_CODIGO,
-                        ITPD.ITPD_PRAZO_ENTREGA,
-                        TO_CHAR(ITPD.ITPD_DATA_ENTREGA,'YYYY-MM-DD HH24:MI:SS') ITPD_DATA_ENTREGA,
-                        ITPD.ITPD_NOME_RECEBEU
-                   From ITEM_PEDIDO ITPD,
-                        PEDIDO PEDI,
-                        FORNECEDOR FORN
-                  Where PEDI.ID_COTACAO = :ID_COTACAO
-                    And ITPD.ID_PEDIDO = PEDI.ID_PEDIDO
-                    And ITPD.ITPD_VENCEU = 'Sim'
-                    And NVL(ITPD.ITPD_CANCELADO,'Nao') = 'Nao'
-                    And FORN.ID_FORNECEDOR = PEDI.ID_FORNECEDOR`;
+    selectSql = `
+                  Select FORN.FORN_CNPJ,
+                    ITPD.ITPD_PART_NUMBER,
+                    ITPD.ITPD_DESCRICAO,
+                    ITPD.ITPD_QUANTIDADE,
+                    ITPD.ITPD_PRECO_BRUTO_SEGURADORA,
+                    ITPD.ITPD_PRECO_LIQUIDO_FORNECEDOR,
+                    STIT.STIT_CODIGO,
+                    ITPD.ITPD_PRAZO_ENTREGA,
+                    TO_CHAR(ITPD.ITPD_DATA_ENTREGA,'YYYY-MM-DD HH24:MI:SS') ITPD_DATA_ENTREGA,
+                    ITPD.ITPD_NOME_RECEBEU
+                From ITEM_PEDIDO ITPD,
+                    PEDIDO PEDI,
+                    FORNECEDOR FORN,
+                    ITEM_COTACAO ITCO,
+                    STATUS_ITEM STIT
+              Where PEDI.ID_COTACAO = :ID_COTACAO
+                And ITPD.ID_PEDIDO = PEDI.ID_PEDIDO
+                And ITPD.ITPD_VENCEU = 'Sim'
+                And NVL(ITPD.ITPD_CANCELADO,'Nao') = 'Nao'
+                And FORN.ID_FORNECEDOR = PEDI.ID_FORNECEDOR
+                And ITCO.ID_COTACAO    = PEDI.ID_COTACAO
+                AND ITCO.ID_ITEM_COTACAO = ITPD.ID_ITEM_COTACAO
+                And STIT.ID_STATUS_ITEM = ITCO.ID_STATUS_ITEM
+    `;
 
 
     let itensPedido = await connection.execute(selectSql,
@@ -243,9 +256,10 @@ const geraDadosRetornoPecas = async () => {
         itemPedidoJSON.QTDE = itensPedido.rows[key].ITPD_QUANTIDADE;
         itemPedidoJSON.PRECO_CON = itensPedido.rows[key].ITPD_PRECO_BRUTO_SEGURADORA;
         itemPedidoJSON.PRECO_ALT = itensPedido.rows[key].ITPD_PRECO_LIQUIDO_FORNECEDOR;
-        itemPedidoJSON.STATUSITEMPEDIDO = itensPedido.rows[key].STPE_CODIGO;
-        if (itensPedido.rows[key].STPE_CODIGO === 12) {
-          itemPedidoJSON.PRAZO_ENTREGA = itensPedido.rows[key].ITPD_PRAZO_ENTREGA;
+        itemPedidoJSON.STATUSITEMPEDIDO = itensPedido.rows[key].STIT_CODIGO;
+        itemPedidoJSON.PRAZO_ENTREGA = itensPedido.rows[key].ITPD_PRAZO_ENTREGA;
+        if (itensPedido.rows[key].STIT_CODIGO === 12) {
+          
           itemPedidoJSON.DATA_ENTREGA = itensPedido.rows[key].ITPD_DATA_ENTREGA;
           itemPedidoJSON.RECEBIDO_POR = itensPedido.rows[key].ITPD_NOME_RECEBEU;
         };
@@ -268,6 +282,7 @@ const geraDadosRetornoPecas = async () => {
 }
 
 geraDadosRetornoPecas();
+console.log('fim')
 return;
 
 // Create client
