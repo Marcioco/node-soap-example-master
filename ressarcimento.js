@@ -4,8 +4,6 @@ const dbConfig = require("./configDB/configDB");
 //const moment = require("moment");
 const { dataHoraBR, dataHoraBRUTC } = require("./util");
 
-
-
 // function ExcelDateToJSDate(date) {
 //     return new Date(Math.round((date - 25569)*86400*1000));
 //   }
@@ -17,13 +15,9 @@ const gravaRessarcimentoPlanilha = async () => {
     const temp = reader.utils.sheet_to_json(file.Sheets[file.SheetNames[0]])
     let connection = await oracledb.getConnection(dbConfig);
     //SEQ_REPL
-    
-
     try {
-      
         for (key in temp) {
-           
-            dataEmissaoNF = new Date(Date.UTC(0, 0, temp[key].DATA_EMISSAO_NF_DEV -1));
+            dataEmissaoNF = new Date(Date.UTC(0, 0, temp[key].DATA_EMISSAO_NF_DEV - 1));//data em UTC
             await connection.execute(`Insert into RESSACIMENTO_PLANILHA
                                     (ID_RESSACIMENTO_PLANILHA,
                                     REPL_CNPJ_SEGURADORA,
@@ -53,14 +47,12 @@ const gravaRessarcimentoPlanilha = async () => {
                 temp[key].PEDIDO_COMPRA,
                 temp[key].NUMERO_NF_DEV,
                 temp[key].SERIE_NF_DEV,
-                dataHoraBRUTC(dataEmissaoNF),
+                dataHoraBRUTC(dataEmissaoNF), //data sem a hora, gravar UTC mesmo
                 temp[key].VALOR_NF_DEV,
                     'Pendente'],
                 { outFormat: oracledb.OUT_FORMAT_OBJECT });
         }
-
         connection.commit();
-        
     }
     catch (error) {
         connection.rollback();

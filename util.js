@@ -20,12 +20,12 @@ const dataHoraBR = (data) => {
 
   const dataHoraBRUTC = (data) => {
 
-    let dataFormatada = (adicionaZero(data.getUTCDate().toString()) + "/" +
-      (adicionaZero(data.getUTCMonth() + 1).toString()) + "/" +
-      data.getUTCFullYear() + ' ' +
-      adicionaZero(data.getUTCHours()) + ':' +
-      adicionaZero(data.getUTCMinutes()) + ':' +
-      adicionaZero(data.getUTCSeconds()));
+    let dataFormatada = data.getUTCDate() + "/" +
+      ('0' + (data.getUTCMonth() +1) ).slice(-2) + "/" +
+       data.getUTCFullYear() + ' ' +
+       ('0' + data.getUTCHours()).slice(-2)  + ':' +
+       ('0' + data.getUTCMinutes()).slice(-2)  + ':' +
+       ('0' + data.getUTCSeconds()).slice(-2) ;
   
     return dataFormatada;
   }
