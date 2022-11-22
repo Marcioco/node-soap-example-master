@@ -101,6 +101,7 @@ async function dadosFornecedor(args) {
         }
       }
     }
+  }
 
     // {
     //   nomeFantasia: result.rows.length ? result.rows[0].FORN_NOME_FANTASIA : 'Nenhum registro',

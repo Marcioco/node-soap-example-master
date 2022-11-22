@@ -29,6 +29,7 @@
   },
   "homepage": "https://github.com/macogala/node-soap-example#readme",
   "dependencies": {
+    "cron": "^2.1.0",
     "date-fns-tz": "^1.3.7",
     "dotenv": "^16.0.1",
     "express": "^4.15.2",
