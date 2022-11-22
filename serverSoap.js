@@ -7,34 +7,9 @@ var fs = require('fs');
 const oracledb = require("oracledb");
 const dbConfig = require("./configDB/configDB");
 
-
-// the splitter function, used by the service
-function splitter_function(args) {
-    console.log('splitter_function');
-    var splitter = args.splitter;
-    var splitted_msg = args.message.split(splitter);
-    var result = [];
-    for (var i = 0; i < splitted_msg.length; i++) {
-        result.push(splitted_msg[i]);
-    }
-    return {
-        result: result
-    }
-}
-function marcio_function(args) {
-    console.log('marcio_function');
-    var nome = args.nome;
-    var result = nome + ' resultado ok';
-    return {
-        result: result
-    }
-}
-
 async function dadosFornecedor(args) {
     let connection = await oracledb.getConnection(dbConfig);
     try {
-
-
         console.log('aqui 1');
         let selectSql = `Select *
                       From FORNECEDOR FORN
@@ -46,12 +21,25 @@ async function dadosFornecedor(args) {
                 outFormat: oracledb.OUT_FORMAT_OBJECT,
             }
         );
-        return result.rows.length ? result.rows : { result: 'Nenhum registro' };
+        let dadosFornec = {};
+        dadosFornec.PROTREC = {};
+        dadosFornec.PROTREC.PEDIDO = '123456';
+        dadosFornec.Trace = {};
+        dadosFornec.Trace.TraceEntry = [];
+        let message = {};        
+        message.Level = 'INFO';
+        message.message = 'Mensagem so de Teste';
+        dadosFornec.Trace.TraceEntry.push(message);
+        message.Level = 'INFO';
+        message.message = 'Teste de Mensagem Informativa';
+        dadosFornec.Trace.TraceEntry.push(message);
+        //dadosFornec.NOME_FANTASIA = result.rows[0].FORN_NOME_FANTASIA;
+        //dadosFornec.RAZAO_SOCIAL = result.rows[0].FORN_RAZAO_SOCIAL;
+        return result.rows.length ? dadosFornec : { result: 'Nenhum registro' };
     } catch (error) {
         console.error("erro ao listar pedidos", error);
         return { result: 'erro: ' + error.message }
         //res.send("erroSalvar").status(500);
-
     } finally {
         try {
             if (connection) {
@@ -71,7 +59,6 @@ async function solicitacaoPecas(args) {
                 dadosCotacao.args.PPECRECEBIDO02.CHAMADA.CNPJ
             }
         }
-
         let connection = await oracledb.getConnection(dbConfig);
         let selectSql = `Select *
                         From FORNECEDOR FORN
@@ -81,12 +68,9 @@ async function solicitacaoPecas(args) {
             [args.cpf],
             {
                 outFormat: oracledb.OUT_FORMAT_OBJECT,
-
             }
         );
-
         return result.rows.length ? result.rows : { result: 'Nenhum registro' };
-
     } catch (error) {
         console.error("erro ao listar pedidos", error);
         res.send("erroSalvar").status(500);
@@ -101,28 +85,19 @@ async function solicitacaoPecas(args) {
             }
         }
     }
-
-
 }
 
 // the service
 var serviceObject = {
-    MarcioSoapService: { //MessageSplitterService
-        MarcioSOAPPort: { //MessageSplitterServiceSoapPort
-            MessageSplitter: splitter_function,
-            fMarcio: marcio_function,
-            fdadosFornecedor: dadosFornecedor
+    scpSoapService: { //MessageSplitterService
+        scpSoapPort: { //MessageSplitterServiceSoapPort
+            // MessageSplitter: splitter_function,
+            // fMarcio: marcio_function,
+            fEnviarPedido: dadosFornecedor
         }
     }
 };
 
-var serviceObject1 = {
-    ScpSoapService: { //MessageSplitterService
-        ScpSOAPPort: { //MessageSplitterServiceSoapPort            
-            fsolicitacaoPecas: solicitacaoPecas
-        }
-    }
-};
 
 // load the WSDL file
 var xml = fs.readFileSync('serverSoap.wsdl', 'utf8');

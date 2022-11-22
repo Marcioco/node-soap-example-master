@@ -2,7 +2,7 @@
 <wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.example.org/Marcio/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="Marcio" targetNamespace="http://www.example.org/Marcio/">
   <wsdl:types>
     <xsd:schema targetNamespace="http://www.example.org/Marcio/">
-      <xsd:element name="EnviarPedidoRequest">
+      <xsd:element name="fdadosFornecedorRequest">
       	<xsd:complexType>
       		<xsd:sequence>
 
@@ -10,46 +10,35 @@
       		</xsd:sequence>
       	</xsd:complexType>
       </xsd:element>
-      <xsd:element name="EnviarPedidoResponse">
+      <xsd:element name="fdadosFornecedorResponse">
       	<xsd:complexType>
       		<xsd:sequence>
+
       			<xsd:element name="result" type="xsd:string"></xsd:element>
       		</xsd:sequence>
       	</xsd:complexType>
       </xsd:element>
     </xsd:schema>
   </wsdl:types>
-
-	<!-- Message -->
-  <wsdl:message name="EnviarPedidoRequest">
-  	<wsdl:part name="parameters" element="tns:EnviarPedidoRequest"></wsdl:part>
+  <wsdl:message name="fdadosFornecedorRequest">
+  	<wsdl:part name="parameters" element="tns:fdadosFornecedorRequest"></wsdl:part>
   </wsdl:message>
-
   <wsdl:message name="EnviarPedidoResponse">
   	<wsdl:part name="parameters" element="tns:EnviarPedidoResponse"></wsdl:part>
   </wsdl:message>
-
-	<!-- PortType  -->
-  <wsdl:portType name="scpSoapPortType">
-
-  	<!-- Operações -->
-    <wsdl:operation name="fEnviarPedido">
-    	<wsdl:input message="tns:EnviarPedidoRequest"></wsdl:input>
+  <wsdl:portType name="MarcioSoapportType">
+    <wsdl:operation name="fdadosFornecedor">
+    	<wsdl:input message="tns:fdadosFornecedorRequest"></wsdl:input>
     	<wsdl:output message="tns:EnviarPedidoResponse"></wsdl:output>
     </wsdl:operation>
-
   </wsdl:portType>
-
-	<!-- Binding -->
-  <wsdl:binding name="scpSoapBinding"
-  	type="tns:scpSoapPortType">
+  <wsdl:binding name="MarcioSOAPBinding"
+  	type="tns:MarcioSoapportType">
   	<soap:binding style="document"
   		transport="http://schemas.xmlsoap.org/soap/http" />
-
-	<!-- Operações -->
-  	<wsdl:operation name="fEnviarPedido">
+  	<wsdl:operation name="fdadosFornecedor">
   		<soap:operation
-  			soapAction="http://www.example.org/Marcio/fEnviarPedido" />
+  			soapAction="http://www.example.org/Marcio/fdadosFornecedor" />
   		<wsdl:input>
   			<soap:body use="literal" />
   		</wsdl:input>
@@ -57,14 +46,10 @@
   			<soap:body use="literal" />
   		</wsdl:output>
   	</wsdl:operation>
-
   </wsdl:binding>
-
-	<!-- Service  -->
-  <wsdl:service name="scpSoapService">
-    <wsdl:port binding="tns:scpSoapBinding" name="scpSoapPort">
+  <wsdl:service name="MarcioSoapService">
+    <wsdl:port binding="tns:MarcioSOAPBinding" name="MarcioSOAPPort">
       <soap:address location="http://localhost:8000/wsdl"/>
     </wsdl:port>
   </wsdl:service>
-
 </wsdl:definitions>

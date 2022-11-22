@@ -11,15 +11,17 @@ soap.createClient(url, function (err, client) {
   * Parameters of the service call: they need to be called as specified
   * in the WSDL file
   */
+ 
 
   var args = {};
   args.cpf = '12657826000530';
 
   // call the service
-  client.fdadosFornecedor(args, function (err, res) {
+  client.fEnviarPedido(args, function (err, res) {
     if (err)
       throw err;
     // print the service returned result
     console.log(res);
+    
   });
 })
