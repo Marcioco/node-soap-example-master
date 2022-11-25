@@ -10,7 +10,7 @@ const dbConfig = require("./configDB/configDB");
 async function dadosFornecedor(args) {
     let connection = await oracledb.getConnection(dbConfig);
     try {
-        console.log('aqui 1');
+        console.log('dadosFornecedor acessada!');
         let selectSql = `Select *
                       From FORNECEDOR FORN
                       Where FORN.FORN_CNPJ = :FORN_CNPJ`;
