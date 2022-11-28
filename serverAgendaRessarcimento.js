@@ -2,7 +2,7 @@ const CronJob = require('cron').CronJob
 const { buscaPlanilhasRessarcimento } = require('./ressarcimento')
 var express = require('express');
 
-const job = new CronJob('0 * * * * *', () => {
+const job = new CronJob('0 */5 * * * *', () => {
     buscaPlanilhasRessarcimento();
     console.log('rodou');
 }, null, true, 'America/Sao_Paulo')
