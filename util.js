@@ -335,8 +335,8 @@ const gravaDadosPlanilha = async (conexao, planilha) => {
   let nomeArquivo = path.basename(planilha);
   for (key in temp) {
     
-    let RessarcPlanilha = await conexao.execute(`Select ID_RESSACIMENTO_PLANILHA
-                                                      From RESSACIMENTO_PLANILHA
+    let RessarcPlanilha = await conexao.execute(`Select ID_RESSARCIMENTO_PLANILHA
+                                                      From RESSARCIMENTO_PLANILHA
                                                      Where REPL_CNPJ_SEGURADORA = :REPL_CNPJ_SEGURADORA
                                                        And REPL_CNPJ_FORNECEDOR = :REPL_CNPJ_FORNECEDOR
                                                        And REPL_SINISTRO = :REPL_SINISTRO
@@ -352,8 +352,8 @@ const gravaDadosPlanilha = async (conexao, planilha) => {
       { outFormat: oracledb.OUT_FORMAT_OBJECT });
     if (RessarcPlanilha.rows.length === 0) {
       dataEmissaoNF = new Date(Date.UTC(0, 0, temp[key].DATA_EMISSAO_NF_DEV - 1));//data em UTC
-      await conexao.execute(`Insert into RESSACIMENTO_PLANILHA
-                                  (ID_RESSACIMENTO_PLANILHA,
+      await conexao.execute(`Insert into RESSARCIMENTO_PLANILHA
+                                  (ID_RESSARCIMENTO_PLANILHA,
                                    REPL_CNPJ_SEGURADORA,
                                    REPL_CNPJ_FORNECEDOR,
                                    REPL_SINISTRO,
@@ -394,28 +394,28 @@ const gravaDadosPlanilha = async (conexao, planilha) => {
         { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
     } else {
-      await conexao.execute(`Insert into LOG_RESSACIMENTO_PLANILHA
+      await conexao.execute(`Insert into LOG_RESSARCIMENTO_PLANILHA
                                  (LRPL_DATA,
-                                  ID_RESSACIMENTO_PLANILHA,
+                                  ID_RESSARCIMENTO_PLANILHA,
                                   LRPL_MENSAGEM,
                                   LRPL_ARQUIVO)
                           Values (SYSDATE,
-                                  :ID_RESSACIMENTO_PLANILHA,
+                                  :ID_RESSARCIMENTO_PLANILHA,
                                   :LRPL_MENSAGEM,
                                   :LRPL_ARQUIVO)`,
-        [RessarcPlanilha.rows[0].ID_RESSACIMENTO_PLANILHA,
+        [RessarcPlanilha.rows[0].ID_RESSARCIMENTO_PLANILHA,
           'Duplicidade',
           nomeArquivo],
         { outFormat: oracledb.OUT_FORMAT_OBJECT });
 
-      await conexao.execute(`Update RESSACIMENTO_PLANILHA RP
+      await conexao.execute(`Update RESSARCIMENTO_PLANILHA RP
                                     Set REPL_SEQUENCIA = (Select COUNT(1)
-                                                            From LOG_RESSACIMENTO_PLANILHA 
-                                                           Where ID_RESSACIMENTO_PLANILHA = RP.ID_RESSACIMENTO_PLANILHA)
-                                  Where ID_RESSACIMENTO_PLANILHA = :ID_RESSACIMENTO_PLANILHA
+                                                            From LOG_RESSARCIMENTO_PLANILHA 
+                                                           Where ID_RESSARCIMENTO_PLANILHA = RP.ID_RESSARCIMENTO_PLANILHA)
+                                  Where ID_RESSARCIMENTO_PLANILHA = :ID_RESSARCIMENTO_PLANILHA
       
 `,
-        [RessarcPlanilha.rows[0].ID_RESSACIMENTO_PLANILHA],
+        [RessarcPlanilha.rows[0].ID_RESSARCIMENTO_PLANILHA],
         { outFormat: oracledb.OUT_FORMAT_OBJECT });
     }
   }
