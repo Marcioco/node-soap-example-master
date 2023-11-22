@@ -387,6 +387,7 @@ const gravaDadosPlanilha = async (conexao, planilha) => {
         temp[key].PEDIDO_COMPRA,
         temp[key].NUMERO_NF_DEV,
         temp[key].SERIE_NF_DEV,
+      
         dataHoraBRUTC(dataEmissaoNF), //data sem a hora, gravar UTC mesmo
         temp[key].VALOR_NF_DEV,
           'Pendente',

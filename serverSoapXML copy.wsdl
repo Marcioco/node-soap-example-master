@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns="http://www.example.org/Marcio/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="Marcio" targetNamespace="http://www.example.org/Marcio/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://www.example.org/Marcio/">
+      <xsd:element name="TesteXmlRequest">
+      	<xsd:complexType>
+      		<xsd:sequence>
+      			<xsd:element name="xml" type="xsd:string"></xsd:element>
+      		</xsd:sequence>
+      	</xsd:complexType>
+      </xsd:element>
+      <xsd:element name="TesteXmlResponseEnvelope" abstract="true" type="xsd:string">
+
+      </xsd:element>
+      <xsd:element name="fTesteXmlFault">
+      	<xsd:complexType>
+      		<xsd:sequence>
+
+      			<xsd:element name="fTesteXmlFault"
+      				type="xsd:string">
+      			</xsd:element>
+      		</xsd:sequence>
+      	</xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </wsdl:types>
+
+	<!-- Message -->
+  <wsdl:message name="TesteXmlRequest">
+  	<wsdl:part name="parameters" element="TesteXmlRequest"></wsdl:part>
+  </wsdl:message>
+
+  <wsdl:message name="TesteXmlResponseEnvelope">
+  	<wsdl:part name="parameters" element="TesteXmlResponseEnvelope"></wsdl:part>
+  </wsdl:message>
+
+	<!-- PortType  -->
+	<wsdl:message name="fTesteXmlFault">
+		<wsdl:part name="parameters" element="fTesteXmlFault"></wsdl:part>
+	</wsdl:message>
+	<wsdl:portType name="testeSoapPortType">
+
+  	<!-- Operações -->
+    <wsdl:operation name="fTesteXml">
+    	<wsdl:input message="TesteXmlRequest"></wsdl:input>
+    	<wsdl:output message="TesteXmlResponseEnvelope"></wsdl:output>
+            <wsdl:fault name="fault" message="fTesteXmlFault"></wsdl:fault>
+        </wsdl:operation>
+
+  </wsdl:portType>
+
+	<!-- Binding -->
+  <wsdl:binding name="testeSoapBinding"  	type="testeSoapPortType">
+	<soap:binding style="document"	transport="http://schemas.xmlsoap.org/soap/http" />
+
+	<!-- Operações -->
+  	<wsdl:operation name="fTesteXml">
+  		<soap:operation
+  			soapAction="http://www.example.org/Marcio/fTesteXml" />
+  		<wsdl:input>
+  			<soap:body use="literal" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<fTesteXmlResult use="literal" />
+  		</wsdl:output>
+  	</wsdl:operation>
+
+  </wsdl:binding>
+
+	<!-- Service  -->
+  <wsdl:service name="testeSoapService">
+    <wsdl:port binding="testeSoapBinding" name="testeSoapPort">
+      <soap:address location="http://localhost:8005/wsdl"/>
+    </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://ws.127.0.0.1/mediadora.asmx" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://ws.127.0.0.1/mediadora.asmx">
+<wsdl:types>
+<s:schema elementFormDefault="qualified" targetNamespace="http://ws.127.0.0.1/mediadora.asmx">
+<s:element name="TesteXML">
+<s:complexType>
+<s:sequence>
+<s:element minOccurs="0" maxOccurs="1" name="strXml" type="s:string"/>
+</s:sequence>
+</s:complexType>
+</s:element>
+<s:element name="TesteXMLResponse">
+<s:complexType>
+<s:sequence>
+<s:element minOccurs="0" maxOccurs="1" name="TesteXMLResult">
+<s:complexType mixed="true">
+<s:sequence>
+<s:any/>
+</s:sequence>
+</s:complexType>
+</s:element>
+</s:sequence>
+</s:complexType>
+</s:element>
+</s:schema>
+</wsdl:types>
+<wsdl:message name="TesteXMLSoapIn">
+<wsdl:part name="parameters" element="tns:TesteXML"/>
+</wsdl:message>
+<wsdl:message name="TesteXMLSoapOut">
+<wsdl:part name="parameters" element="tns:TesteXMLResponse"/>
+</wsdl:message>
+<wsdl:portType name="mediadoraSoap">
+<wsdl:operation name="TesteXML">
+<wsdl:input message="tns:TesteXMLSoapIn"/>
+<wsdl:output message="tns:TesteXMLSoapOut"/>
+</wsdl:operation>
+</wsdl:portType>
+<wsdl:binding name="mediadoraSoap" type="tns:mediadoraSoap">
+<soap:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+<wsdl:operation name="TesteXML">
+<soap:operation soapAction="http://ws.127.0.0.1/mediadora.asmx/TesteXML" style="document"/>
+<wsdl:input>
+<soap:body use="literal"/>
+</wsdl:input>
+<wsdl:output>
+<soap:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+</wsdl:binding>
+<wsdl:binding name="mediadoraSoap12" type="tns:mediadoraSoap">
+<soap12:binding transport="http://schemas.xmlsoap.org/soap/http"/>
+<wsdl:operation name="TesteXML">
+<soap12:operation soapAction="http://ws.127.0.0.1/mediadora.asmx/TesteXML" style="document"/>
+<wsdl:input>
+<soap12:body use="literal"/>
+</wsdl:input>
+<wsdl:output>
+<soap12:body use="literal"/>
+</wsdl:output>
+</wsdl:operation>
+</wsdl:binding>
+<wsdl:service name="mediadora">
+<wsdl:port name="mediadoraSoap" binding="tns:mediadoraSoap">
+<soap:address location="http://ws.127.0.0.1/mediadora.asmx"/>
+</wsdl:port>
+<wsdl:port name="mediadoraSoap12" binding="tns:mediadoraSoap12">
+<soap12:address location="http://ws.127.0.0.1/mediadora.asmx"/>
+</wsdl:port>
+</wsdl:service>
+</wsdl:definitions>
